@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+Usage() {
+  echo $(basename $0): Usage: File required
+}
+
+[ -z "$1" ] && Usage && exit 1
+
+perm=$(stat -c %A "$1")
+[ ${perm:3:1} == x ] || chmod u+x "$1"
+
+while true; do 
+  lmt=$(stat -c %Y "$1") 
+  if [[ $lmt != $plmt ]]; then
+    clear
+    echo [$(date +"%H:%M:%S") STARTED]
+    $@
+    echo [$(date +"%H:%M:%S") ENDED]
+  fi
+  plmt=$lmt
+  sleep 1
+done
